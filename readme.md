@@ -3,6 +3,13 @@
 A small SAP BTP CAP app for learning utilities domain modeling. It covers customers, premises, meters, meter readings, and outages. The names and relationships borrow from SAP IS-U, but this is not IS-U. It is a side application you could imagine next to a real utilities system of record.
 
 I built it to practice CDS, OData V4, TypeScript handlers, seed data, Fiori annotations, and the deployment files you need before Cloud Foundry. Local dev uses SQLite. Production bindings (HANA, XSUAA) are prepared in `mta.yaml` and `xs-security.json`.
+## Demo
+https://github.com/user-attachments/assets/00237df4-ece9-4f3f-9a63-3b745245aed3
+
+
+
+
+
 
 ## Domain model
 
