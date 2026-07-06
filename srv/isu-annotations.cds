@@ -3,6 +3,14 @@ using { sap } from '@sap/cds/common';
 
 // --- Action side effects (UI refresh after POST) ---
 
+annotate ISUService.Customers actions {
+    explainBill @(Common: {
+        SideEffects: {
+            TargetProperties: []
+        }
+    });
+};
+
 annotate ISUService.Outages actions {
     confirm @(Common: {
         SideEffects: {
@@ -32,14 +40,33 @@ annotate ISUService.Customers with @(UI: {
     SelectionFields: [
         customerName,
         customerCity,
+        customerState,
         customerCountry
     ],
     LineItem: [
+        {
+            $Type : 'UI.DataFieldForAction',
+            Label : 'Explain bill',
+            Action: 'ISUService.explainBill',
+            Inline: true
+        },
         { Value: customerName, Label: 'Name' },
+        { Value: customerAddress, Label: 'Address' },
         { Value: customerCity, Label: 'City' },
         { Value: customerState, Label: 'Region' },
+        { Value: customerZip, Label: 'Postal code' },
         { Value: customerCountry, Label: 'Country' }
     ],
+    Identification: [{
+        $Type : 'UI.DataFieldForAction',
+        Label : 'Explain bill',
+        Action: 'ISUService.explainBill'
+    }],
+    SelectionPresentationVariant #Default: {
+        PresentationVariant: {
+            Visualizations: ['@UI.LineItem']
+        }
+    },
     Facets: [{
         $Type : 'UI.ReferenceFacet',
         ID    : 'Premises',
@@ -68,6 +95,11 @@ annotate ISUService.Premises with @(UI: {
         { Value: premisesZip, Label: 'Postal code' },
         { Value: customer.customerName, Label: 'Customer' }
     ],
+    SelectionPresentationVariant #Default: {
+        PresentationVariant: {
+            Visualizations: ['@UI.LineItem']
+        }
+    },
     Facets: [
         {
             $Type : 'UI.ReferenceFacet',
@@ -112,17 +144,29 @@ annotate ISUService.Meters with @(UI: {
         premise.premisesCity
     ],
     LineItem: [
-        { Value: meterSerialNumber, Label: 'Serial' },
-        { Value: meterType, Label: 'Type' },
-        { Value: meterUnit, Label: 'Unit' },
-        { Value: premise.premisesCity, Label: 'City' },
         {
             $Type : 'UI.DataFieldForAction',
             Label : 'Register reading',
             Action: 'ISUService.registerReading',
             Inline: true
-        }
+        },
+        { Value: meterSerialNumber, Label: 'Serial' },
+        { Value: meterType, Label: 'Type' },
+        { Value: meterUnit, Label: 'Unit' },
+        { Value: meterLocation, Label: 'Location' },
+        { Value: meterInstallationDate, Label: 'Installed' },
+        { Value: premise.premisesCity, Label: 'City' }
     ],
+    Identification: [{
+        $Type : 'UI.DataFieldForAction',
+        Label : 'Register reading',
+        Action: 'ISUService.registerReading'
+    }],
+    SelectionPresentationVariant #Default: {
+        PresentationVariant: {
+            Visualizations: ['@UI.LineItem']
+        }
+    },
     Facets: [
         {
             $Type : 'UI.ReferenceFacet',
@@ -163,8 +207,14 @@ annotate ISUService.MeterReadings with @(UI: {
         { Value: readingDate, Label: 'Date' },
         { Value: readingValue, Label: 'Value' },
         { Value: readingType, Label: 'Type' },
-        { Value: meter.meterSerialNumber, Label: 'Meter' }
+        { Value: meter.meterSerialNumber, Label: 'Meter' },
+        { Value: meter.meterType, Label: 'Meter type' }
     ],
+    SelectionPresentationVariant #Default: {
+        PresentationVariant: {
+            Visualizations: ['@UI.LineItem']
+        }
+    },
     Facets: [{
         $Type : 'UI.ReferenceFacet',
         ID    : 'Meter',
@@ -186,7 +236,7 @@ annotate ISUService.Outages with @(UI: {
     HeaderInfo: {
         TypeName      : 'Outage',
         TypeNamePlural: 'Outages',
-        Title         : { Value: outageID },
+        Title         : { Value: outageDescription },
         Description   : { Value: outageStatus }
     },
     SelectionFields: [
@@ -195,17 +245,29 @@ annotate ISUService.Outages with @(UI: {
         outageStartDate
     ],
     LineItem: [
-        { Value: outageStatus, Label: 'Status' },
-        { Value: outageStartDate, Label: 'Start' },
-        { Value: outageSeverity, Label: 'Severity' },
-        { Value: premise.premisesCity, Label: 'Premise city' },
         {
             $Type : 'UI.DataFieldForAction',
             Label : 'Confirm outage',
             Action: 'ISUService.confirm',
             Inline: true
-        }
+        },
+        { Value: outageStatus, Label: 'Status' },
+        { Value: outageStartDate, Label: 'Start' },
+        { Value: outageEndDate, Label: 'End' },
+        { Value: outageSeverity, Label: 'Severity' },
+        { Value: outageDescription, Label: 'Description' },
+        { Value: premise.premisesCity, Label: 'Premise city' }
     ],
+    Identification: [{
+        $Type : 'UI.DataFieldForAction',
+        Label : 'Confirm outage',
+        Action: 'ISUService.confirm'
+    }],
+    SelectionPresentationVariant #Default: {
+        PresentationVariant: {
+            Visualizations: ['@UI.LineItem']
+        }
+    },
     Facets: [{
         $Type : 'UI.ReferenceFacet',
         ID    : 'Premise',

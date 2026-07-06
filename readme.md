@@ -37,20 +37,21 @@ Useful URLs:
 
 - OData service root: http://localhost:4004/odata/v4/isu/
 - Metadata: http://localhost:4004/odata/v4/isu/$metadata
+- Fiori preview (customers): http://localhost:4004/$fiori-preview/ISUService/Customers
 - Fiori preview (meters): http://localhost:4004/$fiori-preview/ISUService/Meters
 - Fiori preview (outages): http://localhost:4004/$fiori-preview/ISUService/Outages
 
-On the meters list, select a row and open the object page to see readings. The **Register reading** action opens a dialog for value and date. On outages, **Confirm** moves a REPORTED outage to CONFIRMED.
-
-The auto-generated Fiori preview handles one level of drill-down well. If you go customer → premises → meters, the meter object page may not show all facets. Start from the Meters preview when you want the readings table.
+On the meters list, select a row and open the object page to see readings. The **Register reading** action opens a dialog for value and date. On outages, **Confirm** moves a REPORTED outage to CONFIRMED. On customers, **Explain bill** shows the AI answer in a message.
 
 ## Handlers
 
-`srv/isu-service.ts` implements two bound actions:
+`srv/isu-service.ts` implements three bound actions:
 
 - `confirm` on Outages (only when status is REPORTED)
 - `registerReading` on Meters (inserts a new reading)
+- `explainBill` on Customers (OpenAI bill explanation, shown via `req.info` )
 
+Needs `OPENAI_API_KEY` in `.env`.
 
 Fiori refresh after actions uses `@Common.SideEffects` in `srv/isu-annotations.cds`.
 
